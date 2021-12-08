@@ -1,36 +1,33 @@
-<body>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            <img src="/logo.png" width="70" height="70" class="d-inline-block align-top" alt="">
-        </a>
-        <h1>KazeoBot</h1>
-    </nav>
-    <div id="app"></div>
-    <div class="main">
-        <iframe src="https://marketplace.thetanarena.com/?sort=PriceAsc&page=1" title="iframe Example 1" width="500" height="800" allow="fullscreen">
+<nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="#">
+        <img src="/logo.png" width="70" height="70" class="d-inline-block align-top" alt="">
+    </a>
+    <h1>KazeoBot</h1>
+</nav>
+<div id="app"></div>
+<div class="main">
+    <iframe src="https://marketplace.thetanarena.com/?sort=PriceAsc&page=1" title="iframe Example 1" width="500" height="800" allow="fullscreen">
         </iframe>
-        <form id="msform">
-            <fieldset>
-                <h2 class="fs-title">Kazéo Bot : auto-buy NFT Thetan Arena </h2>
-                <h3 class="fs-subtitle">paramètre:</h3>
-                <input type="text" name="pricelimit" placeholder="Prix Limite / Price Limit" />
-                <div class="container">
-                    <p>idlast:</p>
-                    <p id=idlast></p>
-                </div>
-                <div class="container">
-                    <p>idnew: </p>
-                    <p id=idnew></p>
-                </div>
-                <div class="container">
-                    <p>reload_compteur: </p>
-                    <p id=reloadcompteur></p>
-                </div>
-                <input type="button" id="validate" class="next action-button" value="Validate" />
-                <input type="button" id="reloadIframe" class="next action-button" value="Reload" />
-                <input type="button" id="stopbot" class="next action-button" value="Start" />
-            </fieldset>
-        </form>
-    </div>
-
-</body>
+    <form id="msform">
+        <fieldset>
+            <h2 class="fs-title">Kazéo Bot : auto-buy NFT Thetan Arena </h2>
+            <h3 class="fs-subtitle">paramètre:</h3>
+            <input type="text" name="pricelimit" placeholder="Prix Limite / Price Limit" />
+            <div class="container">
+                <p>idlast:</p>
+                <p id=idlast></p>
+            </div>
+            <div class="container">
+                <p>idnew: </p>
+                <p id=idnew></p>
+            </div>
+            <div class="container">
+                <p>reload_compteur: </p>
+                <p id=reloadcompteur></p>
+            </div>
+            <input type="button" id="validate" class="next action-button" value="Validate" />
+            <input type="button" id="reloadIframe" class="next action-button" value="Reload" />
+            <input type="button" id="stopbot" class="next action-button" value="Start" />
+        </fieldset>
+    </form>
+</div>
