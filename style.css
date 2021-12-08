@@ -1,0 +1,154 @@
+/*custom font*/
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/*basic reset*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 150%;
+    /*Image only BG fallback*/
+    /*background = gradient + image pattern combo*/
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(196, 102, 0, 0.6)), to(rgba(155, 89, 182, 0.6)));
+    background: linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
+}
+
+body {
+    font-family: montserrat, arial, verdana;
+}
+
+nav {
+    background: #2b2222d9;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+nav h1 {
+    font-size: 1.5em;
+    color: #fff;
+    padding: 1em;
+}
+
+nav img {
+    border: 1px solid #fff;
+    padding: 10px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.container {
+    margin: 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: no-wrap;
+    flex-wrap: no-wrap;
+}
+
+.main {
+    margin: 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: no-wrap;
+    flex-wrap: no-wrap;
+    width: 80%;
+    text-align: center;
+    background: #e1c1a0;
+    border: 0 none;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 50px 30px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#msform {
+    width: 100%;
+    margin: 50px auto;
+    text-align: left;
+}
+
+#msform fieldset {
+    background: white;
+    border: 0 none;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+    position: relative;
+}
+
+#msform fieldset:not(:first-of-type) {
+    display: none;
+}
+
+#msform input,
+#msform textarea {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+#msform .action-button {
+    width: 100px;
+    background: #27AE60;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 1px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+#msform .action-button:hover,
+#msform .action-button:focus {
+    -webkit-box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+
+
+/*headings*/
+
+.fs-title {
+    font-size: 15px;
+    text-transform: uppercase;
+    color: #2C3E50;
+    margin-bottom: 10px;
+}
+
+.fs-subtitle {
+    font-weight: normal;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+
+/*# sourceMappingURL=style.css.map */
