@@ -1,33 +1,52 @@
-<nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand" href="#">
-        <img src="/logo.png" width="70" height="70" class="d-inline-block align-top" alt="">
-    </a>
-    <h1>KazeoBot</h1>
-</nav>
-<div id="app"></div>
-<div class="main">
-    <iframe src="https://marketplace.thetanarena.com/?sort=PriceAsc&page=1" title="iframe Example 1" width="500" height="800" allow="fullscreen">
-        </iframe>
-    <form id="msform">
-        <fieldset>
-            <h2 class="fs-title">Kazéo Bot : auto-buy NFT Thetan Arena </h2>
-            <h3 class="fs-subtitle">paramètre:</h3>
-            <input type="text" name="pricelimit" placeholder="Prix Limite / Price Limit" />
-            <div class="container">
-                <p>idlast:</p>
-                <p id=idlast></p>
-            </div>
-            <div class="container">
-                <p>idnew: </p>
-                <p id=idnew></p>
-            </div>
-            <div class="container">
-                <p>reload_compteur: </p>
-                <p id=reloadcompteur></p>
-            </div>
-            <input type="button" id="validate" class="next action-button" value="Validate" />
-            <input type="button" id="reloadIframe" class="next action-button" value="Reload" />
-            <input type="button" id="stopbot" class="next action-button" value="Start" />
-        </fieldset>
-    </form>
-</div>
+<body>
+    <nav class="navbar navbar-light bg-light"> <a class="navbar-brand" href="#"> <img src="https://zupimages.net/up/21/49/bimw.png" " width="70" height="70" class="d-inline-block align-top" alt=""> </a>
+        <h1>KazeoBot</h1>
+    </nav>
+    <div class="main" id="mainPage">
+        <iframe src="https://marketplace.thetanarena.com/?sort=PriceAsc&page=1" title="iframe Example 1" width="500" height="800" allow="fullscreen"> </iframe>
+        <form id="msform">
+            <fieldset>
+                <h2 class="fs-title">Kazéo Bot : auto-buy NFT Thetan Arena </h2>
+                <h3 class="fs-subtitle">options:</h3> <input type="text" name="pricelimit" placeholder="Prix Limite / Price Limit" />
+                <div class="container">
+                    <p>Price limit :</p>
+                    <p id=printPriceLimit>Undefined</p>
+                </div>
+
+                <div class="container">
+                    <p>Reload Compteur: </p>
+                    <p id=reloadcompteur>0</p>
+                </div>
+                <div>
+                    <p id="erreur"></p>
+                </div>
+                <input type="button" id="validate" class="next action-button" value="Valid option" />
+                <input type="button" id="reloadIframe" class="next action-button" value="Reload" />
+                <input type="button" id="stopbot" class="next action-button" value="Start" />
+                <input type="button" id="NightLight" class="next action-button" value="NightMode" />
+                <div class="container idhero">
+                    <p>ID last Hero:</p>
+                    <p id=idlast></p>
+                </div>
+                <div class="container idhero">
+                    <p>ID new Hero: </p>
+                    <p id=idnew></p>
+                </div>
+                <div class="container">
+                    <p>Crypto Info: </p>
+                    <p id=ThetanCoinInDollar></p>
+                </div>
+                <div class="heroInfo">
+                    <h1>Last Hero in PriceLimit</h1>
+                    <span class="datahero"><p>Rareté : </p><p id="rarete"></p></span>
+                    <span class="datahero"><p>Battle Left:</p>   <p id="battleleft"></p></span>
+                    <span class="datahero"><p>Price Hero : </p> <p id="priceHero"></p></span>
+                    <span class="datahero"><p>Gain with Hero:</p> <p id="revenuHero"></p></span>
+                    <span class="datahero"><p>Total : </p> <p id="rentabilite"></p></span>
+                    <span class="datahero"><p>URL: </p> <p id="urlHero"></p></span>
+                </div>
+            </fieldset>
+
+        </form>
+    </div>
+</body>
