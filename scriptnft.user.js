@@ -159,6 +159,36 @@
                 console.log(priceLimit);
             }
 
+
+
+
+
+            function loadIframe() {
+                console.log("iframe loaded");
+                loaded = true;
+                console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"));
+                let jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq");
+                options = {
+                        childList: true
+                    },
+                    observer = new MutationObserver(mCallback);
+                observer.observe(jscontentShop, options);
+
+            }
+
+
+
+
+            function mCallback(mutations) {
+                for (let mutation of mutations) {
+                    if (mutation.type === 'childList') {
+                        console.log('Mutation Detected: A child node has been added or removed.');
+                        console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._PlY79SrJSws5XfuJwFS"));
+                    }
+                }
+            }
+
+
             function NightLight() {
                 if (nightLight == true) {
                     nightLight = false;
@@ -221,11 +251,8 @@
                         const config = { attributes: true, childList: true, subtree: true };
                         // Create an observer instance linked to the callback function
                         const observer = new MutationObserver(callback);
-
-
                         // Start observing the target node for configured mutations
                         observer.observe(targetNode, config);
-
                         // Later, you can stop observing
                         observer.disconnect();
             */
@@ -238,6 +265,21 @@
                 //console.log(persoSelect);
                 //document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK")
                 //debugger;
+
+                if (checkOptions() == false) {
+                    console.log("checkOptions() == false");
+                    return;
+                }
+
+                if (loaded == false) {
+                    await wait(2000);
+                    loaded = true;
+                }
+
+
+
+
+
                 persoSelect = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK").innerText;
                 persoSelect += document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.cGnfWVqUjWDf7blY11f3").innerText;
                 console.log(persoSelect);
@@ -269,52 +311,59 @@
 
             }
 
+            function checkOptions() {
+                if (priceLimit == undefined || priceLimit == null) { //si le prix n'est pas defini
+                    if (stopbot == true) {
+                        printErreur.innerText = "Please set the price limit";
+                        stopBot();
+                    }
+                    console.log("priceLimit undefined = true");
+                    return false; //quitte et se met en attente d'event startbot
+                }
+
+                if (stopbot == false) {
+                    console.log("bot stopped = true");
+                    return false; //quitte et se met en attente d'event startbot
+                }
+
+                if (printErreur.innerText == "Please set the price limit") {
+                    printErreur.innerText = "";
+                }
+                return true;
+            }
+
+
+            //debugger;
+
             async function tryAutoBuy() {
 
-                //debugger;
-                while (1) {
-                    if (priceLimit == undefined || priceLimit == null) { //si le prix n'est pas defini
-                        if (stopbot == true) {
-                            printErreur.innerText = "Please set the price limit";
-                            stopBot();
-                        }
-                        console.log("priceLimit undefined = true");
-                        return; //quitte et se met en attente d'event startbot
-                    }
 
-                    if (stopbot == false) {
-                        console.log("bot stopped = true");
-                        return; //quitte et se met en attente d'event startbot
-                    }
 
-                    if (printErreur.innerText == "Please set the price limit") {
-                        printErreur.innerText = "";
-                    }
+                if (loaded == false) {
+                    await wait(2000);
+                    loaded = true;
+                }
 
-                    if (loaded == false) {
-                        await wait(2000);
-                        loaded = true;
-                    }
-
-                    autobuy();
-                    if (find == true) { //si le perso est trouvé
-                        clickPerso(); //click on the perso
-                        await wait(2000); //On attend que ça charge 
-                        if (calculRentable() == true) { //si le perso est rentable
-                            clickbuttonbuy(); //click on the button buy
-                            await wait(2000); // On attend que ça charge
-                            clickbuttonbuy2(); //click on the button buy
-                            stopBot();
-                            find = false;
-                            return;
-                        } else {
-                            reloadIframe();
-                            find = false;
-                            return;
-                        }
+                autobuy();
+                if (find == true) { //si le perso est trouvé
+                    clickPerso(); //click on the perso
+                    await wait(2000); //On attend que ça charge 
+                    if (calculRentable() == true) { //si le perso est rentable
+                        clickbuttonbuy(); //click on the button buy
+                        await wait(2000); // On attend que ça charge
+                        clickbuttonbuy2(); //click on the button buy
+                        stopBot();
+                        find = false;
+                        return;
+                    } else {
+                        reloadIframe();
+                        find = false;
+                        return;
                     }
                 }
             }
+
+
 
             function panel() {
                 document.getElementsByTagName('body')[0].innerHTML = GM_getResourceText('html') + "<style>" + GM_getResourceText('css') + "</style>";
@@ -333,6 +382,9 @@
             buttonValidate.addEventListener('click', validate);
             buttonStop.addEventListener('click', stopBot);
             buttonNightLight.addEventListener('click', NightLight);
+            let eventLoad = document.querySelector('iframe').addEventListener('load', loadIframe);
+
+
             //print
             const printNew = document.getElementById('idnew');
             const printLast = document.getElementById('idlast');
@@ -346,6 +398,9 @@
             const printPriceHero = document.getElementById('priceHero');
             const printRevenuHero = document.getElementById('revenuHero');
             const printUrlHero = document.getElementById('urlHero');
+
+
+
 
             let compteurReload = 0;
             let persoSelect;
@@ -368,3 +423,34 @@
     }
 
 })();
+
+/*
+
+function printScriptTextContent(script) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", script.src)
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            //console.log("the script text content is",xhr.responseText);
+            return xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+console.log(printScriptTextContent(document.getElementsByTagName('script')[0]));
+
+
+
+
+function load_js(src) {
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.src = src;
+    head.appendChild(script);
+}
+let scripts = document.getElementsByTagName('script');
+for (let i = 0; i < scripts.length; i++) {
+    load_js(document.getElementsByTagName('script')[i].src);
+
+}
+*/
