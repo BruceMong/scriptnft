@@ -157,7 +157,7 @@
                     buttonStop.value = "Stop";
                     buttonStop.style.backgroundColor = "#ae2727";
                     console.log("bot started");
-                    tryAutoBuy()
+                    autobuy()
                 }
             }
 
@@ -189,56 +189,73 @@
             // loadScriptPromise('path/script.js').then(...)
             function reloadIframe() {
                 document.querySelector('iframe').src = document.querySelector('iframe').src;
-                console.log('iframe reloaded');
+                console.log('iframe reload');
                 loadedIframe = false;
                 loadedIframeContentJs = false;
                 compteurReload++;
                 printReload.innerText = compteurReload;
+                loadIframe();
+                return
             }
 
-            function loadIframe() {
-                return new Promise((resolve) => {
-                    if (loadedIframe == true) {
-                        resolve();
-                    }
-                    document.querySelector('iframe').addEventListener('load', () => {
-                        console.log("iframe loaded");
-                        loadedIframe = true;
-                        console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"));
-                        resolve();
-                    });
-                });
+            function loadIframe() { // create event that when iframe  loaded,  create an event to wait load iframe content js
+                document.querySelector('iframe').addEventListener('load', () => {
+                    console.log("iframe loaded HTML");
+                    loadedIframe = true;
+                    //console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"));
+                    loadContentJsIframe();
+                }, once = true); // s'éxécute une seule fois
             }
 
+            //document.querySelector('iframe').addEventListener('load', OnLoadIframe());
+
+            //OnLoadIframe = function() {
 
 
-            function loadContentJsIframe() {
-                return new Promise((resolve) => {
-                    if (loadedIframeContentJs == true) {
-                        resolve();
-                    }
 
-                    function mCallback(mutations) {
-                        for (let mutation of mutations) {
-                            if (mutation.type === 'childList') {
-                                console.log('Mutation Detected: A child node has been added or removed.');
-                                console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._PlY79SrJSws5XfuJwFS"));
-                                loadedIframeContentJs = true;
-                                resolve();
-                            }
-                        }
-                    }
 
-                    let jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
-
-                    options = { childList: true },
-
-                        observer = new MutationObserver(mCallback);
+            function loadContentJsIframe() { // create event to wait load iframe content js
+                let jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
+                options = { childList: true },
                     observer.observe(jscontentShop, options);
-                });
             }
 
+            function mCallback(mutations) { //event that trigger when js content is loaded
+                for (let mutation of mutations) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            console.log(node);
+                            console.log(node.className);
+                            if (node.className == "_K1vS08OYVZ33ZS45ptQ") {
+                                console.log("js content loaded");
+                                loadedIframeContentJs = true;
+                                observer.disconnect();
+                                autobuy();
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
 
+            /*
+                                    var elemToObserve = document.getElementById('your_elem_id');
+                                    var prevClassState = elemToObserve.classList.contains('your_class');
+                                    var observer = new MutationObserver(function(mutations) {
+                                        mutations.forEach(function(mutation) {
+                                            if (mutation.attributeName == "class") {
+                                                var currentClassState = mutation.target.classList.contains('your_class');
+                                                if (prevClassState !== currentClassState) {
+                                                    prevClassState = currentClassState;
+                                                    if (currentClassState)
+                                                        console.log("class added!");
+                                                    else
+                                                        console.log("class removed!");
+                                                }
+                                            }
+                                        });
+                                    });
+            */
 
 
 
@@ -255,15 +272,11 @@
             //IFrame part
 
             async function autobuy() {
-                // persoSelect = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl").firstElementChild;
-                //console.log(persoSelect);
-                //document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK")
-                //debugger;
-
                 if (checkOptions() == false) {
                     console.log("checkOptions() == false");
                     return;
                 }
+
                 persoSelect = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK").innerText;
                 persoSelect += document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.cGnfWVqUjWDf7blY11f3").innerText;
                 console.log(persoSelect);
@@ -290,7 +303,6 @@
                     reloadIframe();
                     return
                 }
-
             }
 
             function checkOptions() {
@@ -316,44 +328,57 @@
 
 
             //debugger;
-
+            /*
+                        function work() {
+                            //return new Promise(resolve => setTimeout(resolve, ms));
+                            return new Promise((resolve) => {
+                                loadIframe().then(loadContentJsIframe()).then(autobuy()).then(() => { //On charge l'iframe et on charge le js puis on execute la fonction autobuy
+                                    resolve(); // on resolve la promesse de promise pour qu'elle soit terminée
+                                });
+                            });
+                        }
+            */
+            /*
             async function tryAutoBuy() {
-                let work = false;
-                let caca = 0;
+                let baba = true;
                 let result;
                 let promise;
+                let caca = 0;
 
                 while (1) {
-                    promise = new Promise((resolve) => {
-                        loadIframe().then(loadContentJsIframe()).then(autobuy()).then(() => { //On charge l'iframe et on charge le js puis on execute la fonction autobuy
-                            resolve(caca++); // on resolve la promesse de promise pour qu'elle soit terminée
-                        });
-                    });
-                    result = await promise;
-                    console.log("caca" + result);
-                }
-                //console.log(caca++);
-
-                /*
-                if (find == true) { //si le perso est trouvé
-                    clickPerso(); //click on the perso
-                    await wait(2000); //On attend que ça charge 
-                    if (calculRentable() == true) { //si le perso est rentable
-                        clickbuttonbuy(); //click on the button buy
-                        await wait(2000); // On attend que ça charge
-                        clickbuttonbuy2(); //click on the button buy
-                        stopBot();
-                        find = false;
-                        return;
-                    } else {
-                        reloadIframe();
-                        find = false;
-                        return;
+                    if (baba == true) {
+                        baba = false;
+                        await work().then(() => { baba = true });
+                        console.log(caca++);
                     }
                 }
-                */
+            } 
+            */
 
+            //break;
+            //console.log("caca" + result);
+
+            //console.log(caca++);
+
+            /*
+            if (find == true) { //si le perso est trouvé
+                clickPerso(); //click on the perso
+                await wait(2000); //On attend que ça charge 
+                if (calculRentable() == true) { //si le perso est rentable
+                    clickbuttonbuy(); //click on the button buy
+                    await wait(2000); // On attend que ça charge
+                    clickbuttonbuy2(); //click on the button buy
+                    stopBot();
+                    find = false;
+                    return;
+                } else {
+                    reloadIframe();
+                    find = false;
+                    return;
+                }
             }
+            */
+
 
 
 
@@ -375,7 +400,7 @@
             buttonStop.addEventListener('click', stopBot);
             buttonNightLight.addEventListener('click', NightLight);
 
-            let eventLoad = document.querySelector('iframe').addEventListener('load', loadIframe);
+            //let eventLoad = document.querySelector('iframe').addEventListener('load', loadIframe);
 
 
             //print
@@ -391,6 +416,7 @@
             const printPriceHero = document.getElementById('priceHero');
             const printRevenuHero = document.getElementById('revenuHero');
             const printUrlHero = document.getElementById('urlHero');
+            observer = new MutationObserver(mCallback);
 
 
 
