@@ -175,18 +175,11 @@
                 printPriceLimit.innerText = priceLimit;
                 console.log(priceLimit);
             }
-            /*
-                        let loadScriptPromise = function(src) {
-                            return new Promise((resolve, reject) => {
-                                loadScript(src, (err, script) => {
-                                    if (err) reject(err);
-                                    else resolve(script);
-                                });
-                            });
-                        };
-            */
-            // usage:
-            // loadScriptPromise('path/script.js').then(...)
+
+
+
+            // --------------------------------------------------
+
             function reloadIframe() {
                 document.querySelector('iframe').src = document.querySelector('iframe').src;
                 console.log('iframe reload');
@@ -199,32 +192,32 @@
             }
 
             function loadIframe() { // create event that when iframe  loaded,  create an event to wait load iframe content js
-                document.querySelector('iframe').addEventListener('load', () => {
-                    console.log("iframe loaded HTML");
-                    loadedIframe = true;
-                    //console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"));
-                    loadContentJsIframe();
-                }, once = true); // s'éxécute une seule fois
+                document.querySelector('iframe').addEventListener('load', OnLoadIframe);
+                return
             }
 
-            //document.querySelector('iframe').addEventListener('load', OnLoadIframe());
+            function OnLoadIframe() {
+                console.log("iframe loaded HTML");
+                loadedIframe = true;
 
-            //OnLoadIframe = function() {
-
-
-
+                //console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq")); /:debug check is iframe loaded
+                loadContentJsIframe();
+                removeEventListener('load', OnLoadIframe);
+                return
+            }
 
             function loadContentJsIframe() { // create event to wait load iframe content js
                 let jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
                 options = { childList: true },
                     observer.observe(jscontentShop, options);
+                return
             }
 
             function mCallback(mutations) { //event that trigger when js content is loaded
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach(function(node) {
-                            console.log(node);
+                            //console.log(node);
                             console.log(node.className);
                             if (node.className == "_K1vS08OYVZ33ZS45ptQ") {
                                 console.log("js content loaded");
@@ -237,37 +230,6 @@
                     }
                 }
             }
-
-            /*
-                                    var elemToObserve = document.getElementById('your_elem_id');
-                                    var prevClassState = elemToObserve.classList.contains('your_class');
-                                    var observer = new MutationObserver(function(mutations) {
-                                        mutations.forEach(function(mutation) {
-                                            if (mutation.attributeName == "class") {
-                                                var currentClassState = mutation.target.classList.contains('your_class');
-                                                if (prevClassState !== currentClassState) {
-                                                    prevClassState = currentClassState;
-                                                    if (currentClassState)
-                                                        console.log("class added!");
-                                                    else
-                                                        console.log("class removed!");
-                                                }
-                                            }
-                                        });
-                                    });
-            */
-
-
-
-
-
-
-
-
-
-
-
-
 
             //IFrame part
 
@@ -294,11 +256,21 @@
 
                 console.log(price);
                 if (price < priceLimit) {
-                    find = true;
-                    console.log("price is ok");
-                    beep();
-                    return;
+                    clickPerso(); //click on the perso
+                    await wait(2000); //On attend que ça charge 
+                    if (calculRentable() == true) { //si le perso est rentable
+                        beep();
+                        clickbuttonbuy(); //click on the button buy
+                        await wait(1000); // On attend que ça charge
+                        clickbuttonbuy2(); //click on the button buy
+                        stopBot();
+                        return;
+                    } else {
+                        reloadIframe();
+                        return;
+                    }
                 } else {
+                    //debugger;
                     console.log("price is too high");
                     reloadIframe();
                     return
@@ -326,62 +298,6 @@
                 return true;
             }
 
-
-            //debugger;
-            /*
-                        function work() {
-                            //return new Promise(resolve => setTimeout(resolve, ms));
-                            return new Promise((resolve) => {
-                                loadIframe().then(loadContentJsIframe()).then(autobuy()).then(() => { //On charge l'iframe et on charge le js puis on execute la fonction autobuy
-                                    resolve(); // on resolve la promesse de promise pour qu'elle soit terminée
-                                });
-                            });
-                        }
-            */
-            /*
-            async function tryAutoBuy() {
-                let baba = true;
-                let result;
-                let promise;
-                let caca = 0;
-
-                while (1) {
-                    if (baba == true) {
-                        baba = false;
-                        await work().then(() => { baba = true });
-                        console.log(caca++);
-                    }
-                }
-            } 
-            */
-
-            //break;
-            //console.log("caca" + result);
-
-            //console.log(caca++);
-
-            /*
-            if (find == true) { //si le perso est trouvé
-                clickPerso(); //click on the perso
-                await wait(2000); //On attend que ça charge 
-                if (calculRentable() == true) { //si le perso est rentable
-                    clickbuttonbuy(); //click on the button buy
-                    await wait(2000); // On attend que ça charge
-                    clickbuttonbuy2(); //click on the button buy
-                    stopBot();
-                    find = false;
-                    return;
-                } else {
-                    reloadIframe();
-                    find = false;
-                    return;
-                }
-            }
-            */
-
-
-
-
             function panel() {
                 document.getElementsByTagName('body')[0].innerHTML = GM_getResourceText('html') + "<style>" + GM_getResourceText('css') + "</style>";
             }
@@ -399,9 +315,6 @@
             buttonValidate.addEventListener('click', validate);
             buttonStop.addEventListener('click', stopBot);
             buttonNightLight.addEventListener('click', NightLight);
-
-            //let eventLoad = document.querySelector('iframe').addEventListener('load', loadIframe);
-
 
             //print
             const printNew = document.getElementById('idnew');
@@ -436,6 +349,10 @@
             const gTHCWin = 6;
             const gTHCLoose = 1;
 
+            //let a = 0;
+            //let b = 0;
+            //let c = 0;
+
             //console.info(GM_info);
             getPriceThetanCoin();
 
@@ -443,80 +360,3 @@
     }
 
 })();
-
-/*
-
-function printScriptTextContent(script) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", script.src)
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            //console.log("the script text content is",xhr.responseText);
-            return xhr.responseText;
-        }
-    };
-    xhr.send();
-}
-console.log(printScriptTextContent(document.getElementsByTagName('script')[0]));
-
-
-
-
-function load_js(src) {
-    var head = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
-    script.src = src;
-    head.appendChild(script);
-}
-let scripts = document.getElementsByTagName('script');
-for (let i = 0; i < scripts.length; i++) {
-    load_js(document.getElementsByTagName('script')[i].src);
-
-}
-*/
-
-
-
-/*
-            const observer = new MutationObserver(function(mutations_list) { //https://usefulangle.com/post/356/javascript-detect-element-added-to-dom
-                mutations_list.forEach(function(mutation) {
-                    mutation.addedNodes.forEach(function(added_node) {
-                        console.log(added_node);
-                        if (added_node != null) {
-                            console.log('#child has been added');
-                            observer.disconnect();
-                        }
-                    });
-                });
-            });
-*/
-//observer.observe(iframe, { subtree: false, childList: true });
-//iframe.body.addEventListener("load", myScript);
-//ptetre faire un removeEventListener(), et un addEventListener() pour eviter les doublons
-
-
-
-
-/*
-            // Callback function to execute when mutations are observed
-            const callback = function(mutationsList, observer) {
-                // Use traditional 'for loops' for IE 11
-                for (const mutation of mutationsList) {
-                    if (mutation.type === 'childList') {
-                        console.log('A child node has been added or removed.');
-                    } else if (mutation.type === 'attributes') {
-                        console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                    }
-                }
-            };
-            // Select the node that will be observed for mutations
-            const targetNode = iframe;
-            // Options for the observer (which mutations to observe)
-            const config = { attributes: true, childList: true, subtree: true };
-            // Create an observer instance linked to the callback function
-            const observer = new MutationObserver(callback);
-            // Start observing the target node for configured mutations
-            observer.observe(targetNode, config);
-            // Later, you can stop observing
-            observer.disconnect();
-*/
