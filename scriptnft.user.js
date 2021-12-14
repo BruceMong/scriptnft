@@ -31,38 +31,92 @@
                 snd.play();
             }
 
-
             function wait(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
-            /*
-            function clickPerso() {
-                function offset(el) {
-                    var rect = el.getBoundingClientRect(),
-                        scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-                        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+
+            function clickHero() {
+                iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl").firstElementChild.click();
+                //crete event to detect when button buy is clickable
+                let target = iframe.document.querySelector("#app"); //div  parent qui contient le shop en loading
+                options = { childList: true },
+                    observerBuy1.observe(target, options);
+                return;
+            }
+
+            //final : 
+            //document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT > div._2s9IBs9bWdr_ZAGIpRC > div > div.bsN3E4gomIg12cqMRRiR > div.Dc1ni2e5ZeRPda6j2cYD > button")
+
+
+            function mCallbackBuy1(mutations) { //event that trigger when js content is loaded
+                for (let mutation of mutations) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            console.log(node.className);
+                            if (node.className == "jra1eUB8wvqbOU7uI1yT") {
+                                console.log("js content loaded buy1");
+                                observerBuy1.disconnect();
+                                console.log(document.querySelector('iframe').contentWindow.document.getElementsByTagName('button'));
+                                clickButtonBuy();
+                            }
+                        });
+                    }
                 }
-                var divOffset = offset(document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl").firstElementChild.getElementsByTagName('div')[2]);
-                console.log(divOffset.left, divOffset.top);
-                document.querySelector('iframe').contentWindow.document.elementFromPoint(divOffset.left, divOffset.top).click();
-            }
-*/
-
-
-            function clickPerso() {
-                document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl").firstElementChild.click();
             }
 
-            function clickbuttonbuy() {
+            //_2s9IBs9bWdr_ZAGIpRC
+
+            async function clickButtonBuy() {
+                await wait(1000);
+                if (calculRentable() == false) { reloadIframe(); return }
                 var button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
                 button[0].click();
+                console.log("click button buy");
+                let target = iframe.document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT");
+                options = { childList: true },
+                    observerCheckOut.observe(target, options);
             }
 
-            function clickbuttonbuy2() {
+            function mCallbackCheckOut(mutations) { //event that trigger when js content is loaded
+                for (let mutation of mutations) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            console.log(node.className);
+                            if (node.className == "jxHiw543NljnoTacZONp f__JC23m9OlDmzw_X7cI") {
+                                console.log("js content loaded buy2");
+                                observerCheckOut.disconnect();
+                                clickButtonCheckOut();
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
+
+            async function clickButtonCheckOut() {
+                await wait(1000);
                 var button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
                 button[3].click();
             }
+            /*
+            function mCallbackBuy2(mutations) { //event that trigger when js content is loaded
+                for (let mutation of mutations) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            console.log(node.className);
+                            if (node.className == "_2s9IBs9bWdr_ZAGIpRC") {
+                                console.log("js content loaded buy2");
+                                observerBuy2.disconnect();
+                                clickButtonBuy();
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
+*/
+
+            //-----------------------------------------------------
 
             function calculRentable() {
                 let gTHCBattle = iframe.document.querySelector("#app > div > div > div > div > div > div > div > div").children[1].children[0].innerText.split('/'); //number gTHC battle;
@@ -184,7 +238,7 @@
                 document.querySelector('iframe').src = document.querySelector('iframe').src;
                 console.log('iframe reload');
                 loadedIframe = false;
-                loadedIframeContentJs = false;
+
                 compteurReload++;
                 printReload.innerText = compteurReload;
                 loadIframe();
@@ -221,7 +275,6 @@
                             console.log(node.className);
                             if (node.className == "_K1vS08OYVZ33ZS45ptQ") {
                                 console.log("js content loaded");
-                                loadedIframeContentJs = true;
                                 observer.disconnect();
                                 autobuy();
                                 return;
@@ -239,11 +292,11 @@
                     return;
                 }
 
-                persoSelect = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK").innerText;
-                persoSelect += document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.cGnfWVqUjWDf7blY11f3").innerText;
-                console.log(persoSelect);
+                heroSelect = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK").innerText;
+                heroSelect += document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.cGnfWVqUjWDf7blY11f3").innerText;
+                console.log(heroSelect);
 
-                printNew.innerHTML = persoSelect;
+                printNew.innerHTML = heroSelect;
                 if (printNew.innerHTML == printLast.innerHTML) { //si le perso n'a pas changé on reload direct l'iframe
                     console.log('perso not changed');
                     reloadIframe();
@@ -256,26 +309,15 @@
 
                 console.log(price);
                 if (price < priceLimit) {
-                    clickPerso(); //click on the perso
-                    await wait(2000); //On attend que ça charge 
-                    if (calculRentable() == true) { //si le perso est rentable
-                        beep();
-                        clickbuttonbuy(); //click on the button buy
-                        await wait(1000); // On attend que ça charge
-                        clickbuttonbuy2(); //click on the button buy
-                        stopBot();
-                        return;
-                    } else {
-                        reloadIframe();
-                        return;
-                    }
+                    clickHero(); //click on the perso
+                    return
                 } else {
-                    //debugger;
                     console.log("price is too high");
                     reloadIframe();
                     return
                 }
             }
+
 
             function checkOptions() {
                 if (priceLimit == undefined || priceLimit == null) { //si le prix n'est pas defini
@@ -330,17 +372,18 @@
             const printRevenuHero = document.getElementById('revenuHero');
             const printUrlHero = document.getElementById('urlHero');
             observer = new MutationObserver(mCallback);
+            observerBuy1 = new MutationObserver(mCallbackBuy1);
+            //observerBuy2 = new MutationObserver(mCallbackBuy2);
+            observerCheckOut = new MutationObserver(mCallbackCheckOut);
+            //observerConf = new MutationObserver(mCallbackConf);
 
 
 
 
             let compteurReload = 0;
-            let persoSelect;
+            let heroSelect;
             let priceLimit;
             let stopbot;
-            let loadedIframe = true;
-            let loadedIframeContentJs = true;
-            let find = false;
             let price;
             let rentabilite;
             let nightLight;
