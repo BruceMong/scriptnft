@@ -66,15 +66,25 @@
 
             //_2s9IBs9bWdr_ZAGIpRC
 
-            async function clickButtonBuy() {
-                await wait(1000);
-                if (calculRentable() == false) { reloadIframe(); return }
-                var button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
-                button[0].click();
-                console.log("click button buy");
+            function clickButtonBuy() {
+                if (calculRentable() == false) { reloadIframe(); return } //check de rentabilité
+                clickButtonBuyAction(); //click button buy en boucle dans un fonction asyncrhone qui s'arrete quand le bouton est clickable (détecté par l'event déclaré en dessous)
+                console.log("clickButtonBuy");
+
                 let target = iframe.document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT");
-                options = { childList: true },
-                    observerCheckOut.observe(target, options);
+                observerCheckOut.observe(target, options);
+            }
+
+
+            async function clickButtonBuyAction() {
+                let button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
+                var caca = 0;
+                while (bBuyDone == false) {
+                    button[0].click();
+                    await wait(100);
+                    console.log("b " + caca++);
+                }
+                return;
             }
 
             function mCallbackCheckOut(mutations) { //event that trigger when js content is loaded
@@ -83,8 +93,9 @@
                         mutation.addedNodes.forEach(function(node) {
                             console.log(node.className);
                             if (node.className == "jxHiw543NljnoTacZONp f__JC23m9OlDmzw_X7cI") {
-                                console.log("js content loaded buy2");
+                                console.log("js content checkout loaded");
                                 observerCheckOut.disconnect();
+                                bBuyDone = true;
                                 clickButtonCheckOut();
                                 return;
                             }
@@ -94,10 +105,18 @@
             }
 
             async function clickButtonCheckOut() {
-                await wait(1000);
                 var button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
-                button[3].click();
+                for (let i = 0; i < 30; i++) {
+                    {
+                        button[3].click();
+                        await wait(100);
+                        console.log("c " + i);
+                    }
+                }
+                bBuyDone = false;
+                return;
             }
+
             /*
             function mCallbackBuy2(mutations) { //event that trigger when js content is loaded
                 for (let mutation of mutations) {
@@ -117,11 +136,17 @@
 */
 
             //-----------------------------------------------------
-
-            function calculRentable() {
-                let gTHCBattle = iframe.document.querySelector("#app > div > div > div > div > div > div > div > div").children[1].children[0].innerText.split('/'); //number gTHC battle;
+            async function calculRentable() {
+                let gTHCBattle;
+                let caca = 0;
+                while (gTHCBattle == undefined || gTHCBattle == null) { //wait for gTHCBattle to be loaded
+                    gTHCBattle = iframe.document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT > div._2s9IBs9bWdr_ZAGIpRC > div > div.bsN3E4gomIg12cqMRRiR > div._jpsH_cv8I9dtm4OPYXu > div.XRqSHFQ4oMEAlIUhTuMU > div > div > div.dhmomsiZbsztJOjpLCfv > p");
+                    await wait(100);
+                    console.log(caca++);
+                }
+                gTHCBattle = iframe.document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT > div._2s9IBs9bWdr_ZAGIpRC > div > div.bsN3E4gomIg12cqMRRiR > div._jpsH_cv8I9dtm4OPYXu > div.XRqSHFQ4oMEAlIUhTuMU > div > div > div.dhmomsiZbsztJOjpLCfv > p").innerText.split('/'); //number gTHC battle;
                 let gTHCBattleLeft = gTHCBattle[1] - gTHCBattle[0];
-                let rarityHero = iframe.document.querySelector("#app > div > div > div > div > div > div > div > div > div:nth-child(1) > div ").children[3].innerText;
+                let rarityHero = iframe.document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT > div._2s9IBs9bWdr_ZAGIpRC > div > div.bsN3E4gomIg12cqMRRiR > div.Dc1ni2e5ZeRPda6j2cYD > div.o_TWf9C94PMJsz7uayDA > div.uJcOb5KjRyvQ4sesPyGO > div > div:nth-child(1) > div > span._P5KyiiOLMI4mRn761wK").innerText;
                 let winBonus;
                 switch (rarityHero) {
                     case "Legendary":
@@ -237,7 +262,6 @@
             function reloadIframe() {
                 document.querySelector('iframe').src = document.querySelector('iframe').src;
                 console.log('iframe reload');
-                loadedIframe = false;
 
                 compteurReload++;
                 printReload.innerText = compteurReload;
@@ -260,22 +284,29 @@
                 return
             }
 
+
             function loadContentJsIframe() { // create event to wait load iframe content js
                 let jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
-                options = { childList: true },
-                    observer.observe(jscontentShop, options);
+                let options = { childList: true };
+                observerLoad1.observe(jscontentShop, options);
                 return
             }
 
-            function mCallback(mutations) { //event that trigger when js content is loaded
+
+
+            function mCallbackLoad1(mutations) {
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach(function(node) {
-                            //console.log(node);
-                            console.log(node.className);
+                            console.log(node)
                             if (node.className == "_K1vS08OYVZ33ZS45ptQ") {
-                                console.log("js content loaded");
-                                observer.disconnect();
+                                console.log("js content loaded1");
+                                observerLoad1.disconnect();
+                                observerLoad2.observe(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ"), options);
+                                // console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ").childNodes)
+
+                                console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div > span._mtcJlWGt1iDNAKqoGXz"))
+                                observerLoad1.disconnect();
                                 autobuy();
                                 return;
                             }
@@ -283,6 +314,47 @@
                     }
                 }
             }
+
+            function mCallbackLoad2(mutations) {
+                console.log(mutations)
+                for (let mutation of mutations) {
+                    console.log(mutations)
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            console.log(node)
+                            if (node.className == "rKe8SyN5EbDxc_X9_6sl") {
+                                console.log("js content loaded2");
+                                observerLoad1.disconnect();
+                                observerLoad2.observe(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl"), options);
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
+
+            function mCallbackLoad3(mutations) {
+                for (let mutation of mutations) {
+                    console.log(node)
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.className == "rKe8SyN5EbDxc_X9_6sl") {
+                                console.log("js content loaded2");
+                                observerLoad1.disconnect();
+                                observerLoad2.observe(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl"), options);
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
+
+
+
+            // faire récursivement ce path 
+            //document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div")
+            let element = document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div")
+
 
             //IFrame part
 
@@ -297,6 +369,7 @@
                 console.log(heroSelect);
 
                 printNew.innerHTML = heroSelect;
+
                 if (printNew.innerHTML == printLast.innerHTML) { //si le perso n'a pas changé on reload direct l'iframe
                     console.log('perso not changed');
                     reloadIframe();
@@ -304,11 +377,13 @@
                 } else {
                     printLast.innerHTML = printNew.innerHTML;
                 }
-                let pricebox = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl").firstElementChild.getElementsByTagName('div')[2].getElementsByTagName('div')[2].getElementsByTagName('div')[0].getElementsByTagName('span')[1];
+
+                let pricebox = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div > span._mtcJlWGt1iDNAKqoGXz");
                 price = pricebox.innerText.replace(/[^0-9.]/g, '');
 
                 console.log(price);
                 if (price < priceLimit) {
+                    beep();
                     clickHero(); //click on the perso
                     return
                 } else {
@@ -371,13 +446,16 @@
             const printPriceHero = document.getElementById('priceHero');
             const printRevenuHero = document.getElementById('revenuHero');
             const printUrlHero = document.getElementById('urlHero');
-            observer = new MutationObserver(mCallback);
+            observerLoad1 = new MutationObserver(mCallbackLoad1);
+            observerLoad2 = new MutationObserver(mCallbackLoad2);
+            observerLoad3 = new MutationObserver(mCallbackLoad3);
             observerBuy1 = new MutationObserver(mCallbackBuy1);
             //observerBuy2 = new MutationObserver(mCallbackBuy2);
             observerCheckOut = new MutationObserver(mCallbackCheckOut);
             //observerConf = new MutationObserver(mCallbackConf);
 
-
+            let options = { childList: true };
+            let bBuyDone = false;
 
 
             let compteurReload = 0;
