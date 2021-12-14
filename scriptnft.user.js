@@ -31,31 +31,28 @@
                 snd.play();
             }
 
-            function wait(ms) {
+            function wait(ms) { //permet d'attendre un certain temps avant de lancer une fonction à coupler avec await (car c'est un async)
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
 
             function clickHero() {
                 iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl").firstElementChild.click();
-                //crete event to detect when button buy is clickable
-                let target = iframe.document.querySelector("#app"); //div  parent qui contient le shop en loading
-                options = { childList: true },
-                    observerBuy1.observe(target, options);
+                //On clique sur le héro qui nous ouvre une autre page (le héro est le premier de la liste)
+
+
+                let target = iframe.document.querySelector("#app"); //div parent qui contient le shop en loading
+                observerBuy.observe(target, options); //crete event to detect when button buy is clickable
                 return;
             }
 
-            //final : 
-            //document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT > div._2s9IBs9bWdr_ZAGIpRC > div > div.bsN3E4gomIg12cqMRRiR > div.Dc1ni2e5ZeRPda6j2cYD > button")
-
-
-            function mCallbackBuy1(mutations) { //event that trigger when js content is loaded
+            function mCallbackBuy(mutations) { //event that trigger when js content is loaded
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach(function(node) {
                             console.log(node.className);
                             if (node.className == "jra1eUB8wvqbOU7uI1yT") {
-                                console.log("js content loaded buy1");
-                                observerBuy1.disconnect();
+                                console.log("js content loaded buy");
+                                observerBuy.disconnect();
                                 console.log(document.querySelector('iframe').contentWindow.document.getElementsByTagName('button'));
                                 clickButtonBuy();
                             }
@@ -64,19 +61,17 @@
                 }
             }
 
-            //_2s9IBs9bWdr_ZAGIpRC
-
             function clickButtonBuy() {
-                if (calculRentable() == false) { reloadIframe(); return } //check de rentabilité
-                clickButtonBuyAction(); //click button buy en boucle dans un fonction asyncrhone qui s'arrete quand le bouton est clickable (détecté par l'event déclaré en dessous)
-                console.log("clickButtonBuy");
+                if (calculRentable() == false) { reloadIframe(); return } //check de rentabilité on quite si pas rentable
+                clickButtonBuyAction();
+                console.log("clickButtonBuy"); // voir description en bas :)
 
                 let target = iframe.document.querySelector("#app > div.jra1eUB8wvqbOU7uI1yT");
-                observerCheckOut.observe(target, options);
+                observerCheckOut.observe(target, options); // On créer l'event pour détécter quand la fenetre de confirmation d'achat est ouverte
             }
 
 
-            async function clickButtonBuyAction() {
+            async function clickButtonBuyAction() { //click button buy en boucle dans un fonction asyncrhone qui s'arrete quand le bouton est clickable (détecté par l'event déclaré en dessous)
                 let button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
                 var caca = 0;
                 while (bBuyDone == false) {
@@ -87,7 +82,7 @@
                 return;
             }
 
-            function mCallbackCheckOut(mutations) { //event that trigger when js content is loaded
+            function mCallbackCheckOut(mutations) { //event that trigger quand la fenetre de confirmation d'achat est ouverte puis appel fonction pour cliquer sur le bouton 
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach(function(node) {
@@ -95,7 +90,7 @@
                             if (node.className == "jxHiw543NljnoTacZONp f__JC23m9OlDmzw_X7cI") {
                                 console.log("js content checkout loaded");
                                 observerCheckOut.disconnect();
-                                bBuyDone = true;
+                                bBuyDone = true; // On arrete d'appuyer sur le bouton achat
                                 clickButtonCheckOut();
                                 return;
                             }
@@ -104,7 +99,7 @@
                 }
             }
 
-            async function clickButtonCheckOut() {
+            async function clickButtonCheckOut() { // On spam 30x le bouton de confirmation d'achat (pcq le bouton est uniquement clickable quand le js est chargé)
                 var button = document.querySelector('iframe').contentWindow.document.getElementsByTagName('button');
                 for (let i = 0; i < 30; i++) {
                     {
@@ -117,26 +112,7 @@
                 return;
             }
 
-            /*
-            function mCallbackBuy2(mutations) { //event that trigger when js content is loaded
-                for (let mutation of mutations) {
-                    if (mutation.type === 'childList') {
-                        mutation.addedNodes.forEach(function(node) {
-                            console.log(node.className);
-                            if (node.className == "_2s9IBs9bWdr_ZAGIpRC") {
-                                console.log("js content loaded buy2");
-                                observerBuy2.disconnect();
-                                clickButtonBuy();
-                                return;
-                            }
-                        });
-                    }
-                }
-            }
-*/
-
-            //-----------------------------------------------------
-            async function calculRentable() {
+            async function calculRentable() { // calcul de rentabilité du héro selon la doc du site
                 let gTHCBattle;
                 let caca = 0;
                 while (gTHCBattle == undefined || gTHCBattle == null) { //wait for gTHCBattle to be loaded
@@ -181,7 +157,7 @@
                 }
             }
 
-            function getPriceThetanCoin() {
+            function getPriceThetanCoin() { // get price of thetan coin
                 function httpGet(theUrl) {
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open("GET", theUrl, false); // false for synchronous request
@@ -236,7 +212,7 @@
                     buttonStop.value = "Stop";
                     buttonStop.style.backgroundColor = "#ae2727";
                     console.log("bot started");
-                    autobuy()
+                    autoBuy()
                 }
             }
 
@@ -285,80 +261,38 @@
             }
 
 
-            function loadContentJsIframe() { // create event to wait load iframe content js
-                let jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
-                let options = { childList: true };
-                observerLoad1.observe(jscontentShop, options);
+            async function loadContentJsIframe() { // create event to wait load iframe content js
+                let jscontentShop;
+                while (jscontentShop == undefined) {
+                    jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
+                    await wait(100);
+                    console.log(jscontentShop);
+                }
+                observerLoad.observe(jscontentShop, options);
                 return
             }
 
 
 
-            function mCallbackLoad1(mutations) {
+            function mCallbackLoad(mutations) {
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach(function(node) {
                             console.log(node)
                             if (node.className == "_K1vS08OYVZ33ZS45ptQ") {
                                 console.log("js content loaded1");
-                                observerLoad1.disconnect();
-                                observerLoad2.observe(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ"), options);
-                                // console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ").childNodes)
-
-                                console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div > span._mtcJlWGt1iDNAKqoGXz"))
-                                observerLoad1.disconnect();
-                                autobuy();
+                                observerLoad.disconnect();
+                                autoBuy();
                                 return;
                             }
                         });
                     }
                 }
             }
-
-            function mCallbackLoad2(mutations) {
-                console.log(mutations)
-                for (let mutation of mutations) {
-                    console.log(mutations)
-                    if (mutation.type === 'childList') {
-                        mutation.addedNodes.forEach(function(node) {
-                            console.log(node)
-                            if (node.className == "rKe8SyN5EbDxc_X9_6sl") {
-                                console.log("js content loaded2");
-                                observerLoad1.disconnect();
-                                observerLoad2.observe(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl"), options);
-                                return;
-                            }
-                        });
-                    }
-                }
-            }
-
-            function mCallbackLoad3(mutations) {
-                for (let mutation of mutations) {
-                    console.log(node)
-                    if (mutation.type === 'childList') {
-                        mutation.addedNodes.forEach(function(node) {
-                            if (node.className == "rKe8SyN5EbDxc_X9_6sl") {
-                                console.log("js content loaded2");
-                                observerLoad1.disconnect();
-                                observerLoad2.observe(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl"), options);
-                                return;
-                            }
-                        });
-                    }
-                }
-            }
-
-
-
-            // faire récursivement ce path 
-            //document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div")
-            let element = document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div.y2C4OpSaD5rCj7A_lJTi > div")
-
 
             //IFrame part
 
-            async function autobuy() {
+            async function autoBuy() {
                 if (checkOptions() == false) {
                     console.log("checkOptions() == false");
                     return;
@@ -446,13 +380,9 @@
             const printPriceHero = document.getElementById('priceHero');
             const printRevenuHero = document.getElementById('revenuHero');
             const printUrlHero = document.getElementById('urlHero');
-            observerLoad1 = new MutationObserver(mCallbackLoad1);
-            observerLoad2 = new MutationObserver(mCallbackLoad2);
-            observerLoad3 = new MutationObserver(mCallbackLoad3);
-            observerBuy1 = new MutationObserver(mCallbackBuy1);
-            //observerBuy2 = new MutationObserver(mCallbackBuy2);
+            observerLoad = new MutationObserver(mCallbackLoad);
+            observerBuy = new MutationObserver(mCallbackBuy);
             observerCheckOut = new MutationObserver(mCallbackCheckOut);
-            //observerConf = new MutationObserver(mCallbackConf);
 
             let options = { childList: true };
             let bBuyDone = false;
