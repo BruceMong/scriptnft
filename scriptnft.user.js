@@ -240,6 +240,7 @@
                 console.log('iframe reload');
 
                 compteurReload++;
+                loadedContentJs = false;
                 printReload.innerText = compteurReload;
                 loadIframe();
                 return
@@ -252,8 +253,6 @@
 
             function OnLoadIframe() {
                 console.log("iframe loaded HTML");
-                loadedIframe = true;
-
                 //console.log(iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq")); /:debug check is iframe loaded
                 loadContentJsIframe();
                 removeEventListener('load', OnLoadIframe);
@@ -263,18 +262,31 @@
 
             async function loadContentJsIframe() { // create event to wait load iframe content js
                 let jscontentShop;
-                while (jscontentShop == undefined) {
+                while (jscontentShop == undefined) { // << Je pense que c'est useless le problème est que parfois l'appel d'event ne se fait pas
                     jscontentShop = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq"); //div  parent qui contient le shop en loading
                     await wait(100);
-                    console.log(jscontentShop);
+                    //console.log(jscontentShop);
                 }
                 observerLoad.observe(jscontentShop, options);
+
+                for (let i = 0; i < 50; i++) { // En cas de bug de mutateur (ça arrive) on fait autobuy au bout de 50 secondes // < Bon ça marche pas de ouf pcq les élément sont pas chargé enfaite 
+                    await wait(100);
+                    if (loadedContentJs == true) { // si le mutateur est fonctionne on sort
+                        return
+                    }
+                }
+                console.log("Mutateur erreur, on fait autrement"); // si le mutateur fonctionne pas au bout de 50 sc on fait  l'autobuy
+                observerLoad.disconnect();
+                loadedContentJs = true;
+                autoBuy();
+
                 return
             }
 
 
 
             function mCallbackLoad(mutations) {
+                console.log(mutations);
                 for (let mutation of mutations) {
                     if (mutation.type === 'childList') {
                         mutation.addedNodes.forEach(function(node) {
@@ -282,6 +294,7 @@
                             if (node.className == "_K1vS08OYVZ33ZS45ptQ") {
                                 console.log("js content loaded1");
                                 observerLoad.disconnect();
+                                loadedContentJs = true;
                                 autoBuy();
                                 return;
                             }
@@ -298,7 +311,11 @@
                     return;
                 }
 
-                heroSelect = document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK").innerText;
+                let heroSelect;
+                while (heroSelect == undefined) {
+                    heroSelect = iframe.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.x1XesU_0OuWqSWN_Lqk9._ZiBmVXRYru3dGxj59oK").innerText; //div  parent qui contient le shop en loading
+                    await wait(100);
+                }
                 heroSelect += document.querySelector('iframe').contentWindow.document.querySelector("#app > section > div > div.v1dL4CXifgr9ZQfxzEeq > div._K1vS08OYVZ33ZS45ptQ > div.rKe8SyN5EbDxc_X9_6sl > div:nth-child(1) > div.HQKOhoAMtTq_y8DTZDGl > div > div._TGcu2vbUFLx1l5YptZK._ZiBmVXRYru3dGxj59oK > span.cGnfWVqUjWDf7blY11f3").innerText;
                 console.log(heroSelect);
 
@@ -400,6 +417,7 @@
             const gTHCWin = 6;
             const gTHCLoose = 1;
 
+            let loadedContentJs = true;
             //let a = 0;
             //let b = 0;
             //let c = 0;
